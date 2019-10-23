@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iotery OAuth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    />
+    <!-- load bootstrap css -->
+    <link
+      rel="stylesheet"
+      href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
+    />
+    <!-- load fontawesome -->
+    <style>
+      body {
+        padding-top: 150px;
+      }
+    </style>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      $(document).ready(function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        $("#redirect_uri").val(urlParams.get("redirect_uri"));
+        $("#state").val(urlParams.get("state"));
+        $("#loginform").submit(function() {
+          $("#phone").unmask();
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="col-sm-6 col-sm-offset-3">
+        <div
+          style="display: flex; justify-content: flex-start; align-content: center"
+        >
+          <h2 style="display: inline-block; margin: auto 20px auto 0px;">
+            <span style="color: #0006b7" class="fa fa-link"></span>
+            Authorize
+          </h2>
+
+          <!-- LOGIN FORM -->
+          <form
+            id="loginform"
+            action="/login"
+            method="post"
+            style="display: inline-block;"
+          >
+            <div>
+              <input
+                id="redirect_uri"
+                type="hidden"
+                name="redirect_uri"
+                value=""
+              />
+              <input id="state" type="hidden" name="state" value="" />
+
+              <button
+                type="submit"
+                style="background:#0006b7; border-style: none;"
+                class="btn btn-warning btn-lg"
+              >
+                Accept
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <hr />
+      </div>
+    </div>
+  </body>
+</html>

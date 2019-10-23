@@ -4,7 +4,8 @@
   "description": "An Express.js train ride down the Actions on Google smart home trail",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "source ./.env.development && node server.js"
   },
   "repository": {
     "type": "git",
