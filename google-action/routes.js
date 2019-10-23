@@ -29,10 +29,6 @@ app.onSync(async (body, headers) => {
     }
   };
 
-  // report state to Home Graph
-  const onOffState = await _getLightOnOffState(deviceUuid);
-  _reportLightOnOffState(deviceUuid, onOffState);
-
   return {
     requestId: body.requestId,
     payload: {
