@@ -17,5 +17,5 @@ app.post("/token", oAuthRoutes.refreshToken);
 app.post("/fulfill", googleActionRoutes.fulfill);
 
 app.listen(PORT, () => {
-  console.log(`Starting Server on Port ${PORT}`);
+  console.log(`starting server on port ${PORT}`);
 });
