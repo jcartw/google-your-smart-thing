@@ -1,0 +1,19 @@
+{
+  "name": "google-your-smart-thing",
+  "version": "1.0.0",
+  "description": "An Express.js train ride down the Actions on Google smart home trail",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcartw89/google-your-smart-thing.git"
+  },
+  "author": "Justin Cartwright",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jcartw89/google-your-smart-thing/issues"
+  },
+  "homepage": "https://github.com/jcartw89/google-your-smart-thing#readme"
+}
