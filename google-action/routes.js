@@ -13,11 +13,14 @@ const iotery = require("iotery-server-sdk")(config.iotery.teamApiKey, {
   baseUrl: config.iotery.baseApiUrl
 });
 
+const uuid = require("uuid");
+
 // cache
 let isUserLinked = true;
 
 const app = smarthome({
-  key: config.homeGraphApiKey
+  key: config.homeGraphApiKey,
+  jwt: require("./google-action-key.json")
 });
 module.exports.fulfill = app;
 
@@ -44,6 +47,10 @@ app.onSync(async (body, headers) => {
       nicknames: [res.name]
     }
   };
+
+  // report state to HomeGraph
+  const onOffState = await _getLightOnOffState(deviceId);
+  _reportLightOnOffState(deviceId, onOffState);
 
   return {
     requestId: body.requestId,
@@ -91,6 +98,10 @@ app.onExecute(async (body, headers) => {
             } catch (err) {
               commands[0].status = "ERROR";
             }
+
+            // report state to HomeGraph
+            const onOffState = await _getLightOnOffState(device.id);
+            _reportLightOnOffState(device.id, onOffState);
           }
         }
       }
@@ -112,6 +123,9 @@ app.onQuery(async (body, headers) => {
     for (const device of input.payload.devices) {
       const on = await _getLightOnOffState(device.id);
       devices[device.id] = { on };
+
+      // report state to Home Graph
+      _reportLightOnOffState(device.id, on);
     }
   }
 
@@ -150,6 +164,25 @@ module.exports.handleDeviceUpdate = async (req, res, next) => {
   res.json({ status: "received" });
 };
 
+// Webhook Handler: Report State
+module.exports.handleDeviceData = async (req, res, next) => {
+  console.log("WEBHOOK: /device-data");
+  const ioteryEnum = req.body.metadata.webhookInfo.enum;
+  const { packets } = req.body.in;
+
+  if (ioteryEnum === "EMBEDDED_POST_DATA") {
+    packets.map(async p => {
+      if (
+        p.deviceUuid === config.iotery.deviceUuid &&
+        p.data["IOTERY_ON_OFF_STATE"] !== undefined
+      ) {
+        const onOffState = p.data["IOTERY_ON_OFF_STATE"] === 1;
+        _reportLightOnOffState(p.deviceUuid, onOffState);
+      }
+    });
+  }
+};
+
 async function _actuateLight({ deviceId, turnOn }) {
   // get a list of the command types
   const commandTypeList = await iotery
@@ -184,4 +217,32 @@ async function _getLightOnOffState(deviceId) {
   const onOffState = data ? data.value === 1 : false;
   console.log(`Device ${deviceId} is ${onOffState ? "ON" : "OFF"}`);
   return onOffState;
+}
+
+function _reportLightOnOffState(deviceUuid, onOffState) {
+  const userId = config.userId;
+
+  const payload = {
+    devices: {
+      states: {
+        [deviceUuid]: {
+          on: onOffState
+        }
+      }
+    }
+  };
+  // Report State to AoG HomeGraph
+  app
+    .reportState({
+      requestId: uuid.v4(),
+      agentUserId: userId,
+      payload
+    })
+    .then(res => {
+      console.log("Successfully reported device state");
+      console.log("On/Off state: ", onOffState ? "ON" : "OFF");
+    })
+    .catch(err => {
+      console.error("There was an error reporting device state");
+    });
 }
