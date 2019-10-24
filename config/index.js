@@ -4,5 +4,6 @@ module.exports = {
   iotery: {
     baseApiUrl: "https://api.iotery.io/v1",
     teamApiKey: process.env.IOTERY_TEAM_API_KEY || null
-  }
+  },
+  homeGraphApiKey: process.env.HOMEGRAPH_API_KEY || null
 };

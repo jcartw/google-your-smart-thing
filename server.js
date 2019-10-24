@@ -16,6 +16,9 @@ app.post("/token", oAuthRoutes.refreshToken);
 // Google Action
 app.post("/fulfill", googleActionRoutes.fulfill);
 
+// Webhooks
+app.post("/update-device", googleActionRoutes.handleDeviceUpdate);
+
 app.listen(PORT, () => {
   console.log(`starting server on port ${PORT}`);
 });

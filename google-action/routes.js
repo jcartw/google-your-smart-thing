@@ -5,6 +5,9 @@ const config = require("../config/index");
 if (!config.iotery.teamApiKey) {
   console.error("You need to provide IOTERY_TEAM_API_KEY as an ENV");
 }
+if (!config.homeGraphApiKey) {
+  console.error("You need to provide HOMEGRAPH_API_KEY as an ENV");
+}
 
 const iotery = require("iotery-server-sdk")(config.iotery.teamApiKey, {
   baseUrl: config.iotery.baseApiUrl
@@ -13,7 +16,9 @@ const iotery = require("iotery-server-sdk")(config.iotery.teamApiKey, {
 // cache
 let isUserLinked = true;
 
-const app = smarthome({});
+const app = smarthome({
+  key: config.homeGraphApiKey
+});
 module.exports.fulfill = app;
 
 // SYNC intent
@@ -115,6 +120,35 @@ app.onQuery(async (body, headers) => {
     payload: { devices }
   };
 });
+
+// Webhook Handler: Request Sync
+module.exports.handleDeviceUpdate = async (req, res, next) => {
+  console.log("WEBHOOK: /update-device");
+  const ioteryEnum = req.body.metadata.webhookInfo.enum;
+  const deviceUuid = req.body.out.uuid;
+
+  if (
+    ioteryEnum === "ACCOUNT_MANAGER_UPDATE_DEVICE" &&
+    deviceUuid === config.deviceId
+  ) {
+    const userId = config.userId;
+    // only send out request sync if account is linked
+    if (isUserLinked) {
+      app
+        .requestSync(userId)
+        .then(res => {
+          console.log("Request sync successful");
+          console.log(res);
+        })
+        .catch(err => {
+          console.error("Request sync failed");
+          console.error(err);
+        });
+    }
+  }
+
+  res.json({ status: "received" });
+};
 
 async function _actuateLight({ deviceId, turnOn }) {
   // get a list of the command types
