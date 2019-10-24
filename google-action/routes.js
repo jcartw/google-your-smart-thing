@@ -140,7 +140,7 @@ async function _actuateLight({ deviceId, turnOn }) {
 async function _getLightOnOffState(deviceId) {
   const data = await iotery
     .getDeviceDataList(
-      { deviceUuid },
+      { deviceUuid: deviceId },
       {
         query: { dataTypeEnum: "IOTERY_ON_OFF_STATE", limit: 1, order: "desc" }
       }
