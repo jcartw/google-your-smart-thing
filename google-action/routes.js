@@ -12,7 +12,6 @@ const iotery = require("iotery-server-sdk")(config.iotery.teamApiKey, {
 
 // cache
 let isUserLinked = true;
-let onOffState = false; // true = ON, false = OFF
 
 const app = smarthome({});
 module.exports.fulfill = app;
