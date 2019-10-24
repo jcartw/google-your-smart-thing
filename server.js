@@ -18,6 +18,7 @@ app.post("/fulfill", googleActionRoutes.fulfill);
 
 // Webhooks
 app.post("/update-device", googleActionRoutes.handleDeviceUpdate);
+app.post("/device-data", googleActionRoutes.handleDeviceData);
 
 app.listen(PORT, () => {
   console.log(`starting server on port ${PORT}`);
