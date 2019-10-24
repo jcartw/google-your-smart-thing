@@ -470,6 +470,14 @@ inherits@2.0.4:
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"
   integrity sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==
 
+iotery-server-sdk@^0.1.24:
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/iotery-server-sdk/-/iotery-server-sdk-0.1.24.tgz#b5ffdbe13d25e940a7aa0e696f76687dee7d75aa"
+  integrity sha512-ZqbpS+AVNvqwhQKrX4xUzRjiWspGCUcVZYk0MxXKyVaF+tkSykug4K7/q3o8gqKlsfryayu2Eb3eCYBekQMErg==
+  dependencies:
+    node-fetch "^2.3.0"
+    qs "^6.7.0"
+
 ipaddr.js@1.9.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.0.tgz#37df74e430a0e47550fe54a2defe30d8acd95f65"
@@ -631,7 +639,7 @@ qs@6.7.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
-qs@^6.5.2:
+qs@^6.5.2, qs@^6.7.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.0.tgz#d1297e2a049c53119cb49cca366adbbacc80b409"
   integrity sha512-27RP4UotQORTpmNQDX8BHPukOnBP3p1uUJY5UnDhaJB+rMt9iMsok724XL+UHU23bEFOHRMQ2ZhI99qOWUMGFA==

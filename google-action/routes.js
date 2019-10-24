@@ -1,6 +1,14 @@
 const { smarthome } = require("actions-on-google");
 
 const config = require("../config/index");
+// check config
+if (!config.iotery.teamApiKey) {
+  console.error("You need to provide IOTERY_TEAM_API_KEY as an ENV");
+}
+
+const iotery = require("iotery-server-sdk")(config.iotery.teamApiKey, {
+  baseUrl: config.iotery.baseApiUrl
+});
 
 // cache
 let isUserLinked = true;
