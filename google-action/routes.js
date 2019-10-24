@@ -233,17 +233,19 @@ function _reportLightOnOffState(deviceUuid, onOffState) {
     }
   };
   // Report State to AoG HomeGraph
-  app
-    .reportState({
-      requestId: uuid.v4(),
-      agentUserId: userId,
-      payload
-    })
-    .then(res => {
-      console.log("Successfully reported device state");
-      console.log("On/Off state: ", onOffState ? "ON" : "OFF");
-    })
-    .catch(err => {
-      console.error("There was an error reporting device state");
-    });
+  if (isUserLinked) {
+    app
+      .reportState({
+        requestId: uuid.v4(),
+        agentUserId: userId,
+        payload
+      })
+      .then(res => {
+        console.log("Successfully reported device state");
+        console.log("On/Off state: ", onOffState ? "ON" : "OFF");
+      })
+      .catch(err => {
+        console.error("There was an error reporting device state");
+      });
+  }
 }
