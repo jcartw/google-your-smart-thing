@@ -24,7 +24,10 @@ app.onSync(async (body, headers) => {
 
   const userId = config.userId;
   const deviceId = config.deviceId;
-  const deviceName = "Jimmy";
+
+  const res = await iotery.getDevice({
+    deviceUuid: deviceId
+  });
 
   const device = {
     id: deviceId,
@@ -32,9 +35,9 @@ app.onSync(async (body, headers) => {
     traits: ["action.devices.traits.OnOff"],
     willReportState: false,
     name: {
-      defaultNames: [deviceName],
-      name: deviceName,
-      nicknames: [deviceName]
+      defaultNames: [res.name],
+      name: res.name,
+      nicknames: [res.name]
     }
   };
 
@@ -76,7 +79,7 @@ app.onExecute(async (body, headers) => {
           if (turnOn !== null) {
             commands[0].states.on = turnOn;
             try {
-              _actuateLight({
+              await _actuateLight({
                 deviceId: device.id,
                 turnOn
               });
@@ -103,7 +106,7 @@ app.onQuery(async (body, headers) => {
 
   for (const input of body.inputs) {
     for (const device of input.payload.devices) {
-      const on = _getLightOnOffState(device.id);
+      const on = await _getLightOnOffState(device.id);
       devices[device.id] = { on };
     }
   }
@@ -114,17 +117,38 @@ app.onQuery(async (body, headers) => {
   };
 });
 
-function _actuateLight({ deviceId, turnOn }) {
+async function _actuateLight({ deviceId, turnOn }) {
+  // get a list of the command types
+  const commandTypeList = await iotery
+    .getCommandTypeList({})
+    .then(r => r.results);
+
+  // get appropriate command type
+  let commandType;
   if (turnOn) {
-    console.log(`Turning Device ${deviceId} ON`);
-    onOffState = true;
+    commandType = commandTypeList.find(t => t.enum === "IOTERY_TURN_LIGHT_ON");
   } else {
-    console.log(`Turning Device ${deviceId} OFF`);
-    onOffState = false;
+    commandType = commandTypeList.find(t => t.enum === "IOTERY_TURN_LIGHT_OFF");
   }
+
+  // send out command instance
+  return iotery.createDeviceCommandInstance(
+    { deviceUuid: deviceId },
+    { commandTypeUuid: commandType.uuid }
+  );
 }
 
-function _getLightOnOffState(deviceId) {
+async function _getLightOnOffState(deviceId) {
+  const data = await iotery
+    .getDeviceDataList(
+      { deviceUuid },
+      {
+        query: { dataTypeEnum: "IOTERY_ON_OFF_STATE", limit: 1, order: "desc" }
+      }
+    )
+    .then(r => r.results[0]);
+
+  const onOffState = data ? data.value === 1 : false;
   console.log(`Device ${deviceId} is ${onOffState ? "ON" : "OFF"}`);
   return onOffState;
 }
