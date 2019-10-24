@@ -173,7 +173,7 @@ module.exports.handleDeviceData = async (req, res, next) => {
   if (ioteryEnum === "EMBEDDED_POST_DATA") {
     packets.map(async p => {
       if (
-        p.deviceUuid === config.iotery.deviceUuid &&
+        p.deviceUuid === config.deviceId &&
         p.data["IOTERY_ON_OFF_STATE"] !== undefined
       ) {
         const onOffState = p.data["IOTERY_ON_OFF_STATE"] === 1;
@@ -220,6 +220,7 @@ async function _getLightOnOffState(deviceId) {
 }
 
 function _reportLightOnOffState(deviceUuid, onOffState) {
+  console.log("Reporting state...");
   const userId = config.userId;
 
   const payload = {
